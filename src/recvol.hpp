@@ -13,8 +13,13 @@ class RecVolumes
   public:
     RecVolumes();
     ~RecVolumes();
+#ifndef __BIONIC__
     void Make(RAROptions *Cmd,char *ArcName,wchar *ArcNameW);
     bool Restore(RAROptions *Cmd,const char *Name,const wchar *NameW,bool Silent);
+#else
+    void Make(RAROptions *Cmd,char *ArcName);
+    bool Restore(RAROptions *Cmd,const char *Name,bool Silent);
+#endif
 };
 
 #endif

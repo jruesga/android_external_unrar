@@ -67,14 +67,21 @@ void RSEncode::EncodeBuf()
   }
 }
 
-
+#ifndef __BIONIC__
 bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
                          const wchar *NameW,bool Silent)
+#else
+bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,bool Silent)
+#endif
 {
   char ArcName[NM];
+#ifndef __BIONIC__
   wchar ArcNameW[NM];
+#endif
   strcpy(ArcName,Name);
+#ifndef __BIONIC__
   wcscpy(ArcNameW,NameW);
+#endif
   char *Ext=GetExt(ArcName);
   bool NewStyle=false;
   bool RevName=Ext!=NULL && stricomp(Ext,".rev")==0;
@@ -94,6 +101,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       Ext--;
     strcpy(Ext,"*.*");
 
+#ifndef __BIONIC__
     if (*ArcNameW!=0)
     {
       wchar *ExtW=GetExt(ArcNameW);
@@ -111,25 +119,38 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
         ExtW--;
       wcscpy(ExtW,L"*.*");
     }
+#endif
     
     FindFile Find;
     Find.SetMask(ArcName);
+#ifndef __BIONIC__
     Find.SetMaskW(ArcNameW);
+#endif
     FindData fd;
     while (Find.Next(&fd))
     {
       Archive Arc(Cmd);
+#ifndef __BIONIC__
       if (Arc.WOpen(fd.Name,fd.NameW) && Arc.IsArchive(true))
+#else
+      if (Arc.WOpen(fd.Name) && Arc.IsArchive(true))
+#endif
       {
         strcpy(ArcName,fd.Name);
+#ifndef __BIONIC__
         wcscpy(ArcNameW,fd.NameW);
+#endif
         break;
       }
     }
   }
 
   Archive Arc(Cmd);
+#ifndef __BIONIC__
   if (!Arc.WCheckOpen(ArcName,ArcNameW))
+#else
+  if (!Arc.WCheckOpen(ArcName))
+#endif
     return(false);
   if (!Arc.Volume)
   {
@@ -150,6 +171,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
   wchar RecVolMaskW[NM];
   size_t BaseNamePartLengthW=0;
   *RecVolMaskW=0;
+#ifndef __BIONIC__
   if (*ArcNameW!=0)
   {
     wchar *VolNumStartW=VolNameToFirstName(ArcNameW,ArcNameW,NewNumbering);
@@ -157,6 +179,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
     BaseNamePartLengthW=VolNumStartW-ArcNameW;
     wcscpy(RecVolMaskW+BaseNamePartLengthW,L"*.rev");
   }
+#endif
 
 
 #ifndef SILENT
@@ -170,15 +193,21 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
 
   FindFile Find;
   Find.SetMask(RecVolMask);
+#ifndef __BIONIC__
   Find.SetMaskW(RecVolMaskW);
+#endif
   FindData RecData;
   int FileNumber=0,RecVolNumber=0,FoundRecVolumes=0,MissingVolumes=0;
   char PrevName[NM];
+#ifndef __BIONIC__
   wchar PrevNameW[NM];
+#endif
   while (Find.Next(&RecData))
   {
     char *CurName=RecData.Name;
+#ifndef __BIONIC__
     wchar *CurNameW=RecData.NameW;
+#endif
     int P[3];
     if (!RevName && !NewStyle)
     {
@@ -199,6 +228,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
           NewStyle=false;
       }
 
+#ifndef __BIONIC__
       wchar *DotW=GetExt(CurNameW);
       if (DotW!=NULL)
       {
@@ -213,6 +243,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
         if (LineCount==2)
           NewStyle=false;
       }
+#endif
     }
     if (NewStyle)
     {
@@ -229,7 +260,11 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
 #endif
 
       File CurFile;
+#ifndef __BIONIC__
       CurFile.TOpen(CurName,CurNameW);
+#else
+      CurFile.TOpen(CurName);
+#endif
       CurFile.Seek(0,SEEK_END);
       int64 Length=CurFile.Tell();
       CurFile.Seek(Length-7,SEEK_SET);
@@ -277,9 +312,15 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
     RecVolNumber=P[1];
     FileNumber=P[2];
     strcpy(PrevName,CurName);
+#ifndef __BIONIC__
     wcscpy(PrevNameW,CurNameW);
+#endif
     File *NewFile=new File;
+#ifndef __BIONIC__
     NewFile->TOpen(CurName,CurNameW);
+#else
+    NewFile->TOpen(CurName);
+#endif
     SrcFile[FileNumber+P[0]-1]=NewFile;
     FoundRecVolumes++;
 #ifndef SILENT
@@ -301,16 +342,26 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
 
   char LastVolName[NM];
   *LastVolName=0;
+#ifndef __BIONIC__
   wchar LastVolNameW[NM];
   *LastVolNameW=0;
+#endif
 
   for (int CurArcNum=0;CurArcNum<FileNumber;CurArcNum++)
   {
     Archive *NewFile=new Archive;
+#ifndef __BIONIC__
     bool ValidVolume=FileExist(ArcName,ArcNameW);
+#else
+    bool ValidVolume=FileExist(ArcName);
+#endif
     if (ValidVolume)
     {
+#ifndef __BIONIC__
       NewFile->TOpen(ArcName,ArcNameW);
+#else
+      NewFile->TOpen(ArcName);
+#endif
       ValidVolume=NewFile->IsArchive(false);
       if (ValidVolume)
       {
@@ -341,15 +392,21 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
         strcpy(NewName,ArcName);
         strcat(NewName,".bad");
 
+#ifndef __BIONIC__
         wchar NewNameW[NM];
         wcscpy(NewNameW,ArcNameW);
         if (*NewNameW!=0)
           wcscat(NewNameW,L".bad");
+#endif
 #ifndef SILENT
         mprintf(St(MBadArc),ArcName);
         mprintf(St(MRenaming),ArcName,NewName);
 #endif
+#ifndef __BIONIC__
         RenameFile(ArcName,ArcNameW,NewName,NewNameW);
+#else
+        RenameFile(ArcName,NewName);
+#endif
       }
       NewFile->Seek(0,SEEK_SET);
     }
@@ -359,7 +416,11 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       // so if we are called from extraction, we will be able to continue
       // extracting. It may happen if .rar and .rev are on read-only disks
       // like CDs.
+#ifndef __BIONIC__
       if (!NewFile->Create(ArcName,ArcNameW))
+#else
+      if (!NewFile->Create(ArcName))
+#endif
       {
         // We need to display the title of operation before the error message,
         // to make clear for user that create error is related to recovery 
@@ -368,7 +429,11 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
 #ifndef SILENT
         mprintf(St(MReconstructing));
 #endif
+#ifndef __BIONIC__
         ErrHandler.CreateErrorMsg(ArcName,ArcNameW);
+#else
+        ErrHandler.CreateErrorMsg(ArcName);
+#endif
         return false;
       }
 
@@ -378,7 +443,9 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       if (CurArcNum==FileNumber-1)
       {
         strcpy(LastVolName,ArcName);
+#ifndef __BIONIC__
         wcscpy(LastVolNameW,ArcNameW);
+#endif
       }
 
 #ifndef SILENT
@@ -386,7 +453,11 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
 #endif
     }
     SrcFile[CurArcNum]=(File*)NewFile;
+#ifndef __BIONIC__
     NextVolumeName(ArcName,ArcNameW,ASIZE(ArcName),!NewNumbering);
+#else
+    NextVolumeName(ArcName,ASIZE(ArcName),!NewNumbering);
+#endif
   }
 
 #ifndef SILENT
@@ -528,11 +599,19 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       CurFile->Close();
       SrcFile[I]=NULL;
     }
+#ifndef __BIONIC__
   if (*LastVolName!=0 || *LastVolNameW!=0)
+#else
+  if (*LastVolName!=0)
+#endif
   {
     // Truncate the last volume to its real size.
     Archive Arc(Cmd);
+#ifndef __BIONIC__
     if (Arc.Open(LastVolName,LastVolNameW,FMF_UPDATE) && Arc.IsArchive(true) &&
+#else
+    if (Arc.Open(LastVolName,FMF_UPDATE) && Arc.IsArchive(true) &&
+#endif
         Arc.SearchBlock(ENDARC_HEAD))
     {
       Arc.Seek(Arc.NextBlockPos,SEEK_SET);

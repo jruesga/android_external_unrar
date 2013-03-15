@@ -3,7 +3,9 @@
 FindFile::FindFile()
 {
   *FindMask=0;
+#ifndef __BIONIC__
   *FindMaskW=0;
+#endif
   FirstCall=true;
 #ifdef _WIN_ALL
   hFind=INVALID_HANDLE_VALUE;
@@ -28,12 +30,14 @@ FindFile::~FindFile()
 void FindFile::SetMask(const char *FindMask)
 {
   strcpy(FindFile::FindMask,NullToEmpty(FindMask));
+#ifndef __BIONIC__
   if (*FindMaskW==0)
     CharToWide(FindMask,FindMaskW);
+#endif
   FirstCall=true;
 }
 
-
+#ifndef __BIONIC__
 void FindFile::SetMaskW(const wchar *FindMaskW)
 {
   if (FindMaskW==NULL)
@@ -43,7 +47,7 @@ void FindFile::SetMaskW(const wchar *FindMaskW)
     WideToChar(FindMaskW,FindMask);
   FirstCall=true;
 }
-
+#endif
 
 bool FindFile::Next(struct FindData *fd,bool GetSymLink)
 {
@@ -94,7 +98,11 @@ bool FindFile::Next(struct FindData *fd,bool GetSymLink)
         return(false);
       }
       strcat(FullName,ent->d_name);
+#ifndef __BIONIC__
       if (!FastFind(FullName,NULL,fd,GetSymLink))
+#else
+      if (!FastFind(FullName,fd,GetSymLink))
+#endif
       {
         ErrHandler.OpenErrorMsg(FullName);
         continue;
@@ -103,6 +111,8 @@ bool FindFile::Next(struct FindData *fd,bool GetSymLink)
       break;
     }
   }
+
+#ifndef __BIONIC__
   *fd->NameW=0;
 #ifdef _APPLE
   if (!LowAscii(fd->Name))
@@ -110,6 +120,7 @@ bool FindFile::Next(struct FindData *fd,bool GetSymLink)
 #elif defined(UNICODE_SUPPORTED)
   if (!LowAscii(fd->Name) && UnicodeEnabled())
     CharToWide(fd->Name,fd->NameW);
+#endif
 #endif
 #endif
   fd->Flags=0;
@@ -121,12 +132,19 @@ bool FindFile::Next(struct FindData *fd,bool GetSymLink)
   return(true);
 }
 
-
+#ifndef __BIONIC__
 bool FindFile::FastFind(const char *FindMask,const wchar *FindMaskW,FindData *fd,bool GetSymLink)
+#else
+bool FindFile::FastFind(const char *FindMask,FindData *fd,bool GetSymLink)
+#endif
 {
   fd->Error=false;
 #ifndef _UNIX
+#ifndef __BIONIC__
   if (IsWildcard(FindMask,FindMaskW))
+#else
+  if (IsWildcard(FindMask))
+#endif
     return(false);
 #endif    
 #ifdef _WIN_ALL
@@ -169,6 +187,7 @@ bool FindFile::FastFind(const char *FindMask,const wchar *FindMaskW,FindData *fd
   fd->FileTime=fd->mtime.GetDos();
   strcpy(fd->Name,FindMask);
 
+#ifndef __BIONIC__
   *fd->NameW=0;
 #ifdef _APPLE
   if (!LowAscii(fd->Name))
@@ -176,6 +195,7 @@ bool FindFile::FastFind(const char *FindMask,const wchar *FindMaskW,FindData *fd
 #elif defined(UNICODE_SUPPORTED)
   if (!LowAscii(fd->Name) && UnicodeEnabled())
     CharToWide(fd->Name,fd->NameW);
+#endif
 #endif
 #endif
   fd->Flags=0;

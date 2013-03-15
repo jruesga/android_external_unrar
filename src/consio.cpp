@@ -4,6 +4,10 @@
 #include "log.cpp"
 #endif
 
+#ifdef __BIONIC__
+#include <termios.h>
+#endif
+
 static int KbdAnsi(char *Addr,int Size);
 
 #if !defined(GUI) && !defined(SILENT)
@@ -121,7 +125,11 @@ void Alarm()
 
 #ifndef SILENT
 #ifndef GUI
+#ifndef __BIONIC__
 void GetPasswordText(wchar *Str,uint MaxLength)
+#else
+void GetPasswordText(char *Str,uint MaxLength)
+#endif
 {
   if (MaxLength==0)
     return;
@@ -146,19 +154,60 @@ void GetPasswordText(wchar *Str,uint MaxLength)
 #else
   strncpyz(StrA,getpass(""),ASIZE(StrA));
 #endif
+
+#ifndef __BIONIC__
   CharToWide(StrA,Str,MaxLength);
+#else
+  strncpyz(Str,StrA,MaxLength);
+#endif
   cleandata(StrA,sizeof(StrA));
+
 #endif
   Str[MaxLength-1]=0;
   RemoveLF(Str);
 }
+
+#if !defined(_EMX) && !defined(_BEOS) && !defined(__sparc) && !defined(sparc) && !defined (__VMS)
+#ifdef __BIONIC__
+const char *getpass(const char *prompt) {
+    struct termios oflags, nflags;
+    static char password[64];
+
+    // disabling echo
+    tcgetattr(fileno(stdin), &oflags);
+    nflags = oflags;
+    nflags.c_lflag &= ~ECHO;
+    nflags.c_lflag |= ECHONL;
+
+    if (tcsetattr(fileno(stdin), TCSANOW, &nflags) != 0) {
+        return "\0";
+    }
+
+    mprintf("%s", prompt);
+    fgets(password, sizeof(password), stdin);
+    password[strlen(password) - 1] = 0;
+
+    // restore terminal
+    if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0) {
+        return "\0";
+    }
+
+    return password;
+}
+#endif
+#endif
+
 #endif
 #endif
 
 
 #ifndef SILENT
+#ifndef __BIONIC__
 bool GetPassword(PASSWORD_TYPE Type,const char *FileName,const wchar *FileNameW,
                  SecPassword *Password)
+#else
+bool GetPassword(PASSWORD_TYPE Type,const char *FileName, SecPassword *Password)
+#endif
 {
   Alarm();
   while (true)
@@ -177,17 +226,28 @@ bool GetPassword(PASSWORD_TYPE Type,const char *FileName,const wchar *FileNameW,
         strcat(PromptStr,NameOnly);
     }
     eprintf("\n%s: ",PromptStr);
-
+#ifndef __BIONIC__
     wchar PlainPsw[MAXPASSWORD];
+#else
+    char PlainPsw[MAXPASSWORD];
+#endif
     GetPasswordText(PlainPsw,ASIZE(PlainPsw));
     if (*PlainPsw==0 && Type==PASSWORD_GLOBAL)
       return(false);
     if (Type==PASSWORD_GLOBAL)
     {
       eprintf(St(MReAskPsw));
+#ifndef __BIONIC__
       wchar CmpStr[MAXPASSWORD];
+#else
+      char CmpStr[MAXPASSWORD];
+#endif
       GetPasswordText(CmpStr,ASIZE(CmpStr));
+#ifndef __BIONIC__
       if (*CmpStr==0 || wcscmp(PlainPsw,CmpStr)!=0)
+#else
+      if (*CmpStr==0 || strcmp(PlainPsw,CmpStr)!=0)
+#endif
       {
         eprintf(St(MNotMatchPsw));
         cleandata(PlainPsw,sizeof(PlainPsw));

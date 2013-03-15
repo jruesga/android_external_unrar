@@ -9,7 +9,11 @@ struct CryptKeyCacheItem
 #ifndef _SFX_RTL_
   CryptKeyCacheItem()
   {
+#ifndef __BIONIC__
     Password.Set(L"");
+#else
+    Password.Set("");
+#endif
   }
 
   ~CryptKeyCacheItem()

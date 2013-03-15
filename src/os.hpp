@@ -155,7 +155,9 @@
 #endif
 #include <pwd.h>
 #include <grp.h>
+#ifndef __BIONIC__
 #include <wchar.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>

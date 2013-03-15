@@ -33,10 +33,16 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
   Arc.Close();
 
   char NextName[NM];
+#ifndef __BIONIC__
   wchar NextNameW[NM];
+#endif
   strcpy(NextName,Arc.FileName);
+#ifndef __BIONIC__
   wcscpy(NextNameW,Arc.FileNameW);
   NextVolumeName(NextName,NextNameW,ASIZE(NextName),(Arc.NewMhd.Flags & MHD_NEWNUMBERING)==0 || Arc.OldFormat);
+#else
+  NextVolumeName(NextName,ASIZE(NextName),(Arc.NewMhd.Flags & MHD_NEWNUMBERING)==0 || Arc.OldFormat);
+#endif
 
 #if !defined(SFX_MODULE) && !defined(RARDLL)
   bool RecoveryDone=false;
@@ -47,12 +53,20 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
   // In -vp mode we force the pause before next volume even if it is present
   // and even if we are on the hard disk. It is important when user does not
   // want to process partially downloaded volumes preliminary.
+#ifndef __BIONIC__
   if (Cmd->VolumePause && !AskNextVol(NextName,NextNameW))
+#else
+  if (Cmd->VolumePause && !AskNextVol(NextName))
+#endif
     FailedOpen=true;
 #endif
 
   if (!FailedOpen)
+#ifndef __BIONIC__
     while (!Arc.Open(NextName,NextNameW,0))
+#else
+    while (!Arc.Open(NextName,0))
+#endif
     {
       // We need to open a new volume which size was not calculated
       // in total size before, so we cannot calculate the total progress
@@ -66,15 +80,27 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
         // Checking for new style volumes renamed by user to old style
         // name format. Some users did it for unknown reason.
         char AltNextName[NM];
+#ifndef __BIONIC__
         wchar AltNextNameW[NM];
+#endif
         strcpy(AltNextName,Arc.FileName);
+#ifndef __BIONIC__
         wcscpy(AltNextNameW,Arc.FileNameW);
         NextVolumeName(AltNextName,AltNextNameW,ASIZE(AltNextName),true);
+#else
+        NextVolumeName(AltNextName,ASIZE(AltNextName),true);
+#endif
         OldSchemeTested=true;
+#ifndef __BIONIC__
         if (Arc.Open(AltNextName,AltNextNameW,0))
+#else
+        if (Arc.Open(AltNextName,0))
+#endif
         {
           strcpy(NextName,AltNextName);
+#ifndef __BIONIC__
           wcscpy(NextNameW,AltNextNameW);
+#endif
           break;
         }
       }
@@ -144,7 +170,11 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
       if (!RecoveryDone)
       {
         RecVolumes RecVol;
+#ifndef __BIONIC__
         RecVol.Restore(Cmd,Arc.FileName,Arc.FileNameW,true);
+#else
+        RecVol.Restore(Cmd,Arc.FileName,true);
+#endif
         RecoveryDone=true;
         continue;
       }
@@ -158,7 +188,11 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
       }
 #endif
 #ifndef SILENT
+#ifndef __BIONIC__
       if (Cmd->AllYes || !AskNextVol(NextName,NextNameW))
+#else
+      if (Cmd->AllYes || !AskNextVol(NextName))
+#endif
 #endif
       {
         FailedOpen=true;
@@ -173,7 +207,11 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
 #if !defined(SILENT) && !defined(_WIN_CE)
       Log(Arc.FileName,St(MAbsNextVol),NextName);
 #endif
+#ifndef __BIONIC__
     Arc.Open(Arc.FileName,Arc.FileNameW,0);
+#else
+    Arc.Open(Arc.FileName,0);
+#endif
     Arc.Seek(PosBeforeClose,SEEK_SET);
     return(false);
   }
@@ -220,6 +258,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
     char OutName[NM];
     IntToExt(Arc.NewLhd.FileName,OutName);
 #ifdef UNICODE_SUPPORTED
+#ifndef __BIONIC__
     bool WideName=(Arc.NewLhd.Flags & LHD_UNICODE) && UnicodeEnabled();
     if (WideName)
     {
@@ -229,6 +268,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
       if (WideToChar(NameW,Name) && IsNameUsable(Name))
         strcpy(OutName,Name);
     }
+#endif
 #endif
     mprintf(St(MExtrPoints),OutName);
     if (!Cmd->DisablePercentage)
@@ -270,7 +310,11 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
 
 
 #ifndef SILENT
+#ifndef __BIONIC__
 bool AskNextVol(char *ArcName,wchar *ArcNameW)
+#else
+bool AskNextVol(char *ArcName)
+#endif
 {
   eprintf(St(MAskNextVol),ArcName);
   if (Ask(St(MContinueQuit))==2)

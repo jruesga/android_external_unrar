@@ -1,6 +1,10 @@
 bool IsAnsiComment(const char *Data,int Size);
 
+#ifndef __BIONIC__
 bool Archive::GetComment(Array<byte> *CmtData,Array<wchar> *CmtDataW)
+#else
+bool Archive::GetComment(Array<byte> *CmtData)
+#endif
 {
   if (!MainComment)
     return(false);
@@ -28,7 +32,11 @@ bool Archive::GetComment(Array<byte> *CmtData,Array<wchar> *CmtDataW)
     {
       // Current (RAR 3.0+) version of archive comment.
       Seek(SFXSize+SIZEOF_MARKHEAD+NewMhd.HeadSize,SEEK_SET);
+#ifndef __BIONIC__
       return(SearchSubBlock(SUBHEAD_TYPE_CMT)!=0 && ReadCommentData(CmtData,CmtDataW)!=0);
+#else
+      return(SearchSubBlock(SUBHEAD_TYPE_CMT)!=0 && ReadCommentData(CmtData)!=0);
+#endif
     }
 #ifndef SFX_MODULE
     // Old style (RAR 2.9) comment header embedded into the main 
@@ -125,13 +133,17 @@ bool Archive::GetComment(Array<byte> *CmtData,Array<wchar> *CmtDataW)
   return(CmtData->Size()>0);
 }
 
-
+#ifndef __BIONIC__
 size_t Archive::ReadCommentData(Array<byte> *CmtData,Array<wchar> *CmtDataW)
+#else
+size_t Archive::ReadCommentData(Array<byte> *CmtData)
+#endif
 {
   bool Unicode=SubHead.SubFlags & SUBHEAD_FLAGS_CMT_UNICODE;
   if (!ReadSubData(CmtData,NULL))
     return(0);
   size_t CmtSize=CmtData->Size();
+#ifndef __BIONIC__
   if (Unicode)
   {
     CmtSize/=2;
@@ -159,6 +171,7 @@ size_t Archive::ReadCommentData(Array<byte> *CmtData,Array<wchar> *CmtDataW)
       CmtData->Alloc(CmtSize);
       CmtDataW->Alloc(wcslen(CmtDataW->Addr()));
     }
+#endif
   return(CmtSize);
 }
 
@@ -169,7 +182,11 @@ void Archive::ViewComment()
   if (Cmd->DisableComment)
     return;
   Array<byte> CmtBuf;
+#ifndef __BIONIC__
   if (GetComment(&CmtBuf,NULL))
+#else
+  if (GetComment(&CmtBuf))
+#endif
   {
     size_t CmtSize=CmtBuf.Size();
     char *ChPtr=(char *)memchr(&CmtBuf[0],0x1A,CmtSize);

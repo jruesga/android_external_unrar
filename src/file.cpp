@@ -7,7 +7,9 @@ File::File()
 {
   hFile=BAD_HANDLE;
   *FileName=0;
+#ifndef __BIONIC__
   *FileNameW=0;
+#endif
   NewFile=false;
   LastWrite=false;
   HandleType=FILE_HANDLENORMAL;
@@ -45,8 +47,11 @@ void File::operator = (File &SrcFile)
   SrcFile.SkipClose=true;
 }
 
-
+#ifndef __BIONIC__
 bool File::Open(const char *Name,const wchar *NameW,uint Mode)
+#else
+bool File::Open(const char *Name,uint Mode)
+#endif
 {
   ErrorType=FILE_SUCCESS;
   FileHandle hNewFile;
@@ -110,14 +115,18 @@ bool File::Open(const char *Name,const wchar *NameW,uint Mode)
     // with overlapped buffers. While we do not call this function with
     // really overlapped buffers yet, we do call it with Name equal to
     // FileName like Arc.Open(Arc.FileName,Arc.FileNameW,...).
+#ifndef __BIONIC__
     if (NameW!=NULL)
       memmove(FileNameW,NameW,(wcslen(NameW)+1)*sizeof(*NameW));
     else
       *FileNameW=0;
+#endif
     if (Name!=NULL)
       memmove(FileName,Name,strlen(Name)+1);
+#ifndef __BIONIC__
     else
       WideToChar(NameW,FileName);
+#endif
     AddFileToList(hFile);
   }
   return(Success);
@@ -125,24 +134,46 @@ bool File::Open(const char *Name,const wchar *NameW,uint Mode)
 
 
 #if !defined(SHELL_EXT) && !defined(SFX_MODULE)
+#ifndef __BIONIC__
 void File::TOpen(const char *Name,const wchar *NameW)
+#else
+void File::TOpen(const char *Name)
+#endif
 {
+#ifndef __BIONIC__
   if (!WOpen(Name,NameW))
+#else
+  if (!WOpen(Name))
+#endif
     ErrHandler.Exit(RARX_OPEN);
 }
 #endif
 
-
+#ifndef __BIONIC__
 bool File::WOpen(const char *Name,const wchar *NameW)
+#else
+bool File::WOpen(const char *Name)
+#endif
 {
+#ifndef __BIONIC__
   if (Open(Name,NameW))
+#else
+  if (Open(Name))
+#endif
     return(true);
+#ifndef __BIONIC__
   ErrHandler.OpenErrorMsg(Name,NameW);
+#else
+  ErrHandler.OpenErrorMsg(Name);
+#endif
   return(false);
 }
 
-
+#ifndef __BIONIC__
 bool File::Create(const char *Name,const wchar *NameW,uint Mode)
+#else
+bool File::Create(const char *Name,uint Mode)
+#endif
 {
   // OpenIndiana based NAS and CIFS shares fail to set the file time if file
   // was created in read+write mode and some data was written and not flushed
@@ -164,14 +195,18 @@ bool File::Create(const char *Name,const wchar *NameW,uint Mode)
   NewFile=true;
   HandleType=FILE_HANDLENORMAL;
   SkipClose=false;
+#ifndef __BIONIC__
   if (NameW!=NULL)
     wcscpy(FileNameW,NameW);
   else
     *FileNameW=0;
+#endif
   if (Name!=NULL)
     strcpy(FileName,Name);
+#ifndef __BIONIC__
   else
     WideToChar(NameW,FileName);
+#endif
   AddFileToList(hFile);
   return(hFile!=BAD_HANDLE);
 }
@@ -190,20 +225,39 @@ void File::AddFileToList(FileHandle hFile)
 
 
 #if !defined(SHELL_EXT) && !defined(SFX_MODULE)
+#ifndef __BIONIC__
 void File::TCreate(const char *Name,const wchar *NameW,uint Mode)
+#else
+void File::TCreate(const char *Name,uint Mode)
+#endif
 {
+#ifndef __BIONIC__
   if (!WCreate(Name,NameW,Mode))
+#else
+  if (!WCreate(Name,Mode))
+#endif
     ErrHandler.Exit(RARX_FATAL);
 }
 #endif
 
-
+#ifndef __BIONIC__
 bool File::WCreate(const char *Name,const wchar *NameW,uint Mode)
+#else
+bool File::WCreate(const char *Name,uint Mode)
+#endif
 {
+#ifndef __BIONIC__
   if (Create(Name,NameW,Mode))
+#else
+  if (Create(Name,Mode))
+#endif
     return(true);
   ErrHandler.SetErrorCode(RARX_CREATE);
+#ifndef __BIONIC__
   ErrHandler.CreateErrorMsg(Name,NameW);
+#else
+  ErrHandler.CreateErrorMsg(Name);
+#endif
   return(false);
 }
 
@@ -233,7 +287,11 @@ bool File::Close()
       }
       hFile=BAD_HANDLE;
       if (!Success && AllowExceptions)
+#ifndef __BIONIC__
         ErrHandler.CloseError(FileName,FileNameW);
+#else
+        ErrHandler.CloseError(FileName);
+#endif
     }
   CloseCount++;
   return(Success);
@@ -258,25 +316,40 @@ bool File::Delete()
     Close();
   if (!AllowDelete)
     return(false);
+#ifndef __BIONIC__
   return(DelFile(FileName,FileNameW));
+#else
+  return(DelFile(FileName));
+#endif
 }
 
-
+#ifndef __BIONIC__
 bool File::Rename(const char *NewName,const wchar *NewNameW)
+#else
+bool File::Rename(const char *NewName)
+#endif
 {
   // we do not need to rename if names are already same
   bool Success=strcmp(FileName,NewName)==0;
+#ifndef __BIONIC__
   if (Success && *FileNameW!=0 && *NullToEmpty(NewNameW)!=0)
     Success=wcscmp(FileNameW,NewNameW)==0;
+#endif
 
   if (!Success)
+#ifndef __BIONIC__
     Success=RenameFile(FileName,FileNameW,NewName,NewNameW);
+#else
+    Success=RenameFile(FileName,NewName);
+#endif
 
   if (Success)
   {
     // renamed successfully, storing the new name
     strcpy(FileName,NewName);
+#ifndef __BIONIC__
     wcscpy(FileNameW,NullToEmpty(NewNameW));
+#endif
   }
   return(Success);
 }
@@ -338,7 +411,12 @@ void File::Write(const void *Data,size_t Size)
       if (FreeSize>Size && FilePos-Size<=0xffffffff && FilePos+Size>0xffffffff)
         ErrHandler.WriteErrorFAT(FileName,FileNameW);
 #endif
+
+#ifndef __BIONIC__
       if (ErrHandler.AskRepeatWrite(FileName,FileNameW,false))
+#else
+      if (ErrHandler.AskRepeatWrite(FileName,false))
+#endif
       {
 #ifndef _WIN_ALL
         clearerr(hFile);
@@ -347,7 +425,11 @@ void File::Write(const void *Data,size_t Size)
           Seek(Tell()-Written,SEEK_SET);
         continue;
       }
+#ifndef __BIONIC__
       ErrHandler.WriteError(NULL,NULL,FileName,FileNameW);
+#else
+      ErrHandler.WriteError(NULL,FileName);
+#endif
     }
     break;
   }
@@ -382,9 +464,15 @@ int File::Read(void *Data,size_t Size)
         }
         else
         {
+#ifndef __BIONIC__
           if (HandleType==FILE_HANDLENORMAL && ErrHandler.AskRepeatRead(FileName,FileNameW))
             continue;
           ErrHandler.ReadError(FileName,FileNameW);
+#else
+          if (HandleType==FILE_HANDLENORMAL && ErrHandler.AskRepeatRead(FileName))
+            continue;
+          ErrHandler.ReadError(FileName);
+#endif
         }
     }
     break;
@@ -440,7 +528,11 @@ int File::DirectRead(void *Data,size_t Size)
 void File::Seek(int64 Offset,int Method)
 {
   if (!RawSeek(Offset,Method) && AllowExceptions)
+#ifndef __BIONIC__
     ErrHandler.SeekError(FileName,FileNameW);
+#else
+    ErrHandler.SeekError(FileName);
+#endif
 }
 
 
@@ -475,7 +567,11 @@ int64 File::Tell()
 {
   if (hFile==BAD_HANDLE)
     if (AllowExceptions)
+#ifndef __BIONIC__
       ErrHandler.SeekError(FileName,FileNameW);
+#else
+      ErrHandler.SeekError(FileName);
+#endif
     else
       return(-1);
 #ifdef _WIN_ALL
@@ -483,7 +579,11 @@ int64 File::Tell()
   uint LowDist=SetFilePointer(hFile,0,&HighDist,FILE_CURRENT);
   if (LowDist==0xffffffff && GetLastError()!=NO_ERROR)
     if (AllowExceptions)
+#ifndef __BIONIC__
       ErrHandler.SeekError(FileName,FileNameW);
+#else
+      ErrHandler.SeekError(FileName);
+#endif
     else
       return(-1);
   return(INT32TO64(HighDist,LowDist));

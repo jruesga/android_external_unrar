@@ -13,14 +13,14 @@ const wchar *NullToEmpty(const wchar *Str)
 
 
 
-
+#ifndef __BIONIC__
 char *IntNameToExt(const char *Name)
 {
   static char OutName[NM];
   IntToExt(Name,OutName);
   return(OutName);
 }
-
+#endif
 
 void ExtToInt(const char *Src,char *Dest)
 {
@@ -101,14 +101,14 @@ char* RemoveLF(char *Str)
   return(Str);
 }
 
-
+#ifndef __BIONIC__
 wchar* RemoveLF(wchar *Str)
 {
   for (int I=(int)wcslen(Str)-1;I>=0 && (Str[I]=='\r' || Str[I]=='\n');I--)
     Str[I]=0;
   return(Str);
 }
-
+#endif
 
 unsigned char loctolower(unsigned char ch)
 {
@@ -143,7 +143,7 @@ unsigned char etoupper(unsigned char ch)
   return(toupper(ch));
 }
 
-
+#ifndef __BIONIC__
 // Unicode version of etoupper.
 wchar etoupperw(wchar ch)
 {
@@ -151,6 +151,7 @@ wchar etoupperw(wchar ch)
     return('I');
   return(toupperw(ch));
 }
+#endif
 
 
 // We do not want to cast every signed char to unsigned when passing to
@@ -207,7 +208,7 @@ bool LowAscii(const char *Str)
   return(true);
 }
 
-
+#ifndef __BIONIC__
 bool LowAscii(const wchar *Str)
 {
   for (int I=0;Str[I]!=0;I++)
@@ -219,7 +220,7 @@ bool LowAscii(const wchar *Str)
   }
   return(true);
 }
-
+#endif
 
 
 
@@ -234,6 +235,7 @@ int stricompc(const char *Str1,const char *Str2)
 
 
 #ifndef SFX_MODULE
+#ifndef __BIONIC__
 int wcsicompc(const wchar *Str1,const wchar *Str2)
 {
 #if defined(_UNIX)
@@ -242,6 +244,7 @@ int wcsicompc(const wchar *Str1,const wchar *Str2)
   return(wcsicomp(Str1,Str2));
 #endif
 }
+#endif
 #endif
 
 
@@ -258,6 +261,7 @@ char* strncpyz(char *dest, const char *src, size_t maxlen)
 
 
 // Safe wcsncpy: copies maxlen-1 max and always returns zero terminated dest.
+#ifndef __BIONIC__
 wchar* wcsncpyz(wchar *dest, const wchar *src, size_t maxlen)
 {
   if (maxlen>0)
@@ -267,6 +271,7 @@ wchar* wcsncpyz(wchar *dest, const wchar *src, size_t maxlen)
   }
   return(dest);
 }
+#endif
 
 
 // Safe strncat: resulting dest length cannot exceed maxlen and dest 
@@ -280,7 +285,7 @@ char* strncatz(char* dest, const char* src, size_t maxlen)
   return dest;
 }
 
-
+#ifndef __BIONIC__
 // Safe wcsncat: resulting dest length cannot exceed maxlen and dest 
 // is always zero terminated. Note that 'maxlen' parameter defines the entire
 // dest buffer size and is not compatible with standard wcsncat.
@@ -291,6 +296,7 @@ wchar* wcsncatz(wchar* dest, const wchar* src, size_t maxlen)
     wcsncat(dest, src, maxlen - Length - 1);
   return dest;
 }
+#endif
 
 
 void itoa(int64 n,char *Str)
@@ -322,7 +328,7 @@ int64 atoil(const char *Str)
   return(n);
 }
 
-
+#ifndef __BIONIC__
 void itoa(int64 n,wchar *Str)
 {
   wchar NumStr[50];
@@ -338,8 +344,9 @@ void itoa(int64 n,wchar *Str)
     Str[I]=NumStr[Pos-I-1];
   Str[Pos]=0;
 }
+#endif
 
-
+#ifndef __BIONIC__
 int64 atoil(const wchar *Str)
 {
   int64 n=0;
@@ -350,8 +357,9 @@ int64 atoil(const wchar *Str)
   }
   return(n);
 }
+#endif
 
-
+#ifndef __BIONIC__
 const wchar* GetWide(const char *Src)
 {
   const size_t MaxLength=NM;
@@ -364,15 +372,16 @@ const wchar* GetWide(const char *Src)
   Str[MaxLength-1]=0;
   return(Str);
 }
+#endif
 
-
+#ifndef __BIONIC__
 const wchar* GetWide(const char *Src,const wchar *SrcW)
 {
   if (SrcW!=NULL && *SrcW!=0)
     return SrcW;
   return GetWide(Src);
 }
-
+#endif
 
 #ifdef _WIN_ALL
 // Parse string containing parameters separated with spaces.

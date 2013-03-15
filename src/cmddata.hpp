@@ -10,7 +10,11 @@ class CommandData:public RAROptions
 {
   private:
     void ProcessSwitchesString(char *Str);
+#ifndef __BIONIC__
     void ProcessSwitch(const char *Switch,const wchar *SwitchW=NULL);
+#else
+    void ProcessSwitch(const char *Switch);
+#endif
     void BadSwitch(const char *Switch);
     bool ExclCheckArgs(StringList *Args,bool Dir,char *CheckName,bool CheckFullPath,int MatchMode);
     uint GetExclAttr(const char *Str);
@@ -27,7 +31,11 @@ class CommandData:public RAROptions
 
     void PreprocessCommandLine(int argc, char *argv[]);
     void ParseCommandLine(int argc, char *argv[]);
+#ifndef __BIONIC__
     void ParseArg(char *Arg,wchar *ArgW);
+#else
+    void ParseArg(char *Arg);
+#endif
     void ParseDone();
     void ParseEnvVar();
     void ReadConfig();
@@ -42,17 +50,26 @@ class CommandData:public RAROptions
     bool AnyFiltersActive();
     int IsProcessFile(FileHeader &NewLhd,bool *ExactMatch=NULL,int MatchType=MATCH_WILDSUBPATH);
     void ProcessCommand();
+#ifndef __BIONIC__
     void AddArcName(const char *Name,const wchar *NameW);
     bool GetArcName(char *Name,wchar *NameW,int MaxSize);
+#else
+    void AddArcName(const char *Name);
+    bool GetArcName(char *Name,int MaxSize);
+#endif
     bool CheckWinSize();
 
     int GetRecoverySize(const char *Str,int DefSize);
 
     char Command[NM+16];
+#ifndef __BIONIC__
     wchar CommandW[NM+16];
+#endif
 
     char ArcName[NM];
+#ifndef __BIONIC__
     wchar ArcNameW[NM];
+#endif
 
     StringList *FileArgs;
     StringList *ExclArgs;

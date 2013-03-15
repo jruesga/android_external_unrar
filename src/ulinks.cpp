@@ -13,7 +13,11 @@ bool ExtractLink(ComprDataIO &DataIO,Archive &Arc,const char *LinkName,uint &Lin
     LinkTarget[DataSize]=0;
     if (Create)
     {
+#ifndef __BIONIC__
       CreatePath(LinkName,NULL,true);
+#else
+      CreatePath(LinkName,true);
+#endif
       if (symlink(LinkTarget,LinkName)==-1) // Error.
         if (errno==EEXIST)
           Log(Arc.FileName,St(MSymLinkExists),LinkName);

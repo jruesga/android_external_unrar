@@ -2,7 +2,9 @@
 #define _RAR_ERRHANDLER_
 
 #ifndef SFX_MODULE
+#ifndef __BIONIC__
 #define ALLOW_EXCEPTIONS
+#endif
 #endif
 
 enum RAR_EXIT // RAR exit code.
@@ -35,6 +37,7 @@ class ErrorHandler
     ErrorHandler();
     void Clean();
     void MemoryError();
+#ifndef __BIONIC__
     void OpenError(const char *FileName,const wchar *FileNameW);
     void CloseError(const char *FileName,const wchar *FileNameW);
     void ReadError(const char *FileName,const wchar *FileNameW);
@@ -43,8 +46,19 @@ class ErrorHandler
     void WriteErrorFAT(const char *FileName,const wchar *FileNameW);
     bool AskRepeatWrite(const char *FileName,const wchar *FileNameW,bool DiskFull);
     void SeekError(const char *FileName,const wchar *FileNameW);
+#else
+    void OpenError(const char *FileName);
+    void CloseError(const char *FileName);
+    void ReadError(const char *FileName);
+    bool AskRepeatRead(const char *FileName);
+    void WriteError(const char *ArcName,const char *FileName);
+    void WriteErrorFAT(const char *FileName);
+    bool AskRepeatWrite(const char *FileName,bool DiskFull);
+    void SeekError(const char *FileName);
+#endif
     void GeneralErrMsg(const char *Msg);
     void MemoryErrorMsg();
+#ifndef __BIONIC__
     void OpenErrorMsg(const char *FileName,const wchar *FileNameW=NULL);
     void OpenErrorMsg(const char *ArcName,const wchar *ArcNameW,const char *FileName,const wchar *FileNameW);
     void CreateErrorMsg(const char *FileName,const wchar *FileNameW=NULL);
@@ -52,6 +66,15 @@ class ErrorHandler
     void CheckLongPathErrMsg(const char *FileName,const wchar *FileNameW);
     void ReadErrorMsg(const char *ArcName,const wchar *ArcNameW,const char *FileName,const wchar *FileNameW);
     void WriteErrorMsg(const char *ArcName,const wchar *ArcNameW,const char *FileName,const wchar *FileNameW);
+#else
+    void OpenErrorMsg(const char *FileName);
+    void OpenErrorMsg(const char *ArcName,const char *FileName);
+    void CreateErrorMsg(const char *FileName);
+    void CreateErrorMsg(const char *ArcName,const char *FileName);
+    void CheckLongPathErrMsg(const char *FileName);
+    void ReadErrorMsg(const char *ArcName,const char *FileName);
+    void WriteErrorMsg(const char *ArcName,const char *FileName);
+#endif
     void Exit(RAR_EXIT ExitCode);
     void SetErrorCode(RAR_EXIT Code);
     RAR_EXIT GetErrorCode() {return(ExitCode);}

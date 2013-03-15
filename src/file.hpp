@@ -66,7 +66,9 @@ class File
     bool OpenShared; // Set by 'Archive' class.
   public:
     char FileName[NM];
+#ifndef __BIONIC__
     wchar FileNameW[NM];
+#endif
 
     FILE_ERRORTYPE ErrorType;
 
@@ -75,16 +77,29 @@ class File
     File();
     virtual ~File();
     void operator = (File &SrcFile);
+#ifndef __BIONIC__
     bool Open(const char *Name,const wchar *NameW=NULL,uint Mode=FMF_READ);
     void TOpen(const char *Name,const wchar *NameW=NULL);
     bool WOpen(const char *Name,const wchar *NameW=NULL);
     bool Create(const char *Name,const wchar *NameW=NULL,uint Mode=FMF_UPDATE|FMF_SHAREREAD);
     void TCreate(const char *Name,const wchar *NameW=NULL,uint Mode=FMF_UPDATE|FMF_SHAREREAD);
     bool WCreate(const char *Name,const wchar *NameW=NULL,uint Mode=FMF_UPDATE|FMF_SHAREREAD);
+#else
+    bool Open(const char *Name,uint Mode=FMF_READ);
+    void TOpen(const char *Name);
+    bool WOpen(const char *Name);
+    bool Create(const char *Name,uint Mode=FMF_UPDATE|FMF_SHAREREAD);
+    void TCreate(const char *Name,uint Mode=FMF_UPDATE|FMF_SHAREREAD);
+    bool WCreate(const char *Name,uint Mode=FMF_UPDATE|FMF_SHAREREAD);
+#endif
     bool Close();
     void Flush();
     bool Delete();
+#ifndef __BIONIC__
     bool Rename(const char *NewName,const wchar *NewNameW=NULL);
+#else
+    bool Rename(const char *NewName);
+#endif
     void Write(const void *Data,size_t Size);
     int Read(void *Data,size_t Size);
     int DirectRead(void *Data,size_t Size);

@@ -6,9 +6,17 @@
 class SecPassword
 {
   private:
+#ifndef __BIONIC__
     void Process(const wchar *Src,wchar *Dst,size_t MaxSize,bool Encode);
+#else
+    void Process(const char *Src,char *Dst,size_t MaxSize,bool Encode);
+#endif
 
+#ifndef __BIONIC__
     wchar Password[MAXPASSWORD];
+#else
+    char Password[MAXPASSWORD];
+#endif
 
     // It is important to have this 'bool' value, so if our object is cleaned
     // with memset as a part of larger structure, it is handled correctly.
@@ -17,8 +25,13 @@ class SecPassword
     SecPassword();
     ~SecPassword();
     void Clean();
+#ifndef __BIONIC__
     void Get(wchar *Psw,size_t MaxSize);
     void Set(const wchar *Psw);
+#else
+    void Get(char *Psw,size_t MaxSize);
+    void Set(const char *Psw);
+#endif
     bool IsSet() {return PasswordSet;}
     size_t Length();
     bool operator == (SecPassword &psw);

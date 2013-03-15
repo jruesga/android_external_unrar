@@ -25,8 +25,11 @@ void ErrorHandler::MemoryError()
   Throw(RARX_MEMORY);
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::OpenError(const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::OpenError(const char *FileName)
+#endif
 {
 #ifndef SILENT
   OpenErrorMsg(FileName);
@@ -34,8 +37,11 @@ void ErrorHandler::OpenError(const char *FileName,const wchar *FileNameW)
 #endif
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::CloseError(const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::CloseError(const char *FileName)
+#endif
 {
 #ifndef SILENT
   if (!UserBreak)
@@ -49,19 +55,29 @@ void ErrorHandler::CloseError(const char *FileName,const wchar *FileNameW)
 #endif
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::ReadError(const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::ReadError(const char *FileName)
+#endif
 {
 #ifndef SILENT
+#ifndef __BIONIC__
   ReadErrorMsg(NULL,NULL,FileName,FileNameW);
+#else
+  ReadErrorMsg(NULL,FileName);
+#endif
 #endif
 #if !defined(SILENT) || defined(RARDLL)
   Throw(RARX_FATAL);
 #endif
 }
 
-
+#ifndef __BIONIC__
 bool ErrorHandler::AskRepeatRead(const char *FileName,const wchar *FileNameW)
+#else
+bool ErrorHandler::AskRepeatRead(const char *FileName)
+#endif
 {
 #if !defined(SILENT) && !defined(SFX_MODULE) && !defined(_WIN_CE)
   if (!Silent)
@@ -75,11 +91,18 @@ bool ErrorHandler::AskRepeatRead(const char *FileName,const wchar *FileNameW)
   return(false);
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::WriteError(const char *ArcName,const wchar *ArcNameW,const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::WriteError(const char *ArcName,const char *FileName)
+#endif
 {
 #ifndef SILENT
+#ifndef __BIONIC__
   WriteErrorMsg(ArcName,ArcNameW,FileName,FileNameW);
+#else
+  WriteErrorMsg(ArcName,FileName);
+#endif
 #endif
 #if !defined(SILENT) || defined(RARDLL)
   Throw(RARX_WRITE);
@@ -100,8 +123,11 @@ void ErrorHandler::WriteErrorFAT(const char *FileName,const wchar *FileNameW)
 }
 #endif
 
-
+#ifndef __BIONIC__
 bool ErrorHandler::AskRepeatWrite(const char *FileName,const wchar *FileNameW,bool DiskFull)
+#else
+bool ErrorHandler::AskRepeatWrite(const char *FileName,bool DiskFull)
+#endif
 {
 #if !defined(SILENT) && !defined(_WIN_CE)
   if (!Silent)
@@ -115,8 +141,11 @@ bool ErrorHandler::AskRepeatWrite(const char *FileName,const wchar *FileNameW,bo
   return(false);
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::SeekError(const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::SeekError(const char *FileName)
+#endif
 {
 #ifndef SILENT
   if (!UserBreak)
@@ -147,14 +176,20 @@ void ErrorHandler::MemoryErrorMsg()
 #endif
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::OpenErrorMsg(const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::OpenErrorMsg(const char *FileName)
+#endif
 {
-  OpenErrorMsg(NULL,NULL,FileName,FileNameW);
+  OpenErrorMsg(NULL,FileName);
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::OpenErrorMsg(const char *ArcName,const wchar *ArcNameW,const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::OpenErrorMsg(const char *ArcName,const char *FileName)
+#endif
 {
 #ifndef SILENT
   if (FileName!=NULL)
@@ -164,14 +199,24 @@ void ErrorHandler::OpenErrorMsg(const char *ArcName,const wchar *ArcNameW,const 
 #endif
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::CreateErrorMsg(const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::CreateErrorMsg(const char *FileName)
+#endif
 {
+#ifndef __BIONIC__
   CreateErrorMsg(NULL,NULL,FileName,FileNameW);
+#else
+  CreateErrorMsg(NULL,FileName);
+#endif
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::CreateErrorMsg(const char *ArcName,const wchar *ArcNameW,const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::CreateErrorMsg(const char *ArcName,const char *FileName)
+#endif
 {
 #ifndef SILENT
   if (FileName!=NULL)
@@ -188,7 +233,11 @@ void ErrorHandler::CreateErrorMsg(const char *ArcName,const wchar *ArcNameW,cons
 
 
 // Check the path length and display the error message if it is too long.
+#ifndef __BIONIC__
 void ErrorHandler::CheckLongPathErrMsg(const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::CheckLongPathErrMsg(const char *FileName)
+#endif
 {
 #if defined(_WIN_ALL) && !defined(_WIN_CE) && !defined (SILENT) && defined(MAX_PATH)
   if (GetLastError()==ERROR_PATH_NOT_FOUND)
@@ -210,8 +259,11 @@ void ErrorHandler::CheckLongPathErrMsg(const char *FileName,const wchar *FileNam
 #endif
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::ReadErrorMsg(const char *ArcName,const wchar *ArcNameW,const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::ReadErrorMsg(const char *ArcName,const char *FileName)
+#endif
 {
 #ifndef SILENT
   ErrMsg(ArcName,St(MErrRead),FileName);
@@ -219,8 +271,11 @@ void ErrorHandler::ReadErrorMsg(const char *ArcName,const wchar *ArcNameW,const 
 #endif
 }
 
-
+#ifndef __BIONIC__
 void ErrorHandler::WriteErrorMsg(const char *ArcName,const wchar *ArcNameW,const char *FileName,const wchar *FileNameW)
+#else
+void ErrorHandler::WriteErrorMsg(const char *ArcName,const char *FileName)
+#endif
 {
 #ifndef SILENT
   ErrMsg(ArcName,St(MErrWrite),FileName);

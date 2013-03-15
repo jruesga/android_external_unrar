@@ -99,7 +99,11 @@ size_t Archive::ReadHeader()
         ErrHandler.Exit(RARX_USERBREAK);
       }
 #else
+#ifndef __BIONIC__
       if (!GetPassword(PASSWORD_ARCHIVE,FileName,FileNameW,&Cmd->Password))
+#else
+      if (!GetPassword(PASSWORD_ARCHIVE,FileName,&Cmd->Password))
+#endif
       {
         Close();
         ErrHandler.Exit(RARX_USERBREAK);
@@ -236,6 +240,7 @@ size_t Archive::ReadHeader()
         else
           if (hd->HeadType==FILE_HEAD)
           {
+#ifndef __BIONIC__
             if (hd->Flags & LHD_UNICODE)
             {
               EncodeFileName NameCoder;
@@ -258,9 +263,12 @@ size_t Archive::ReadHeader()
             }
             else
               *hd->FileNameW=0;
+#endif
 #ifndef SFX_MODULE
             ConvertNameCase(hd->FileName);
+#ifndef __BIONIC__
             ConvertNameCase(hd->FileNameW);
+#endif
 #endif
             ConvertUnknownHeader();
           }
@@ -325,8 +333,10 @@ size_t Archive::ReadHeader()
           if (!EncBroken)
           {
 #ifndef SHELL_EXT
+#ifndef __BIONIC__
             Log(Archive::FileName,St(MLogFileHead),IntNameToExt(hd->FileName));
             Alarm();
+#endif
 #endif
           }
         }
@@ -547,6 +557,7 @@ void Archive::ConvertNameCase(char *Name)
 
 
 #ifndef SFX_MODULE
+#ifndef __BIONIC__
 void Archive::ConvertNameCase(wchar *Name)
 {
   if (Cmd->ConvertNames==NAMES_UPPERCASE)
@@ -554,6 +565,7 @@ void Archive::ConvertNameCase(wchar *Name)
   if (Cmd->ConvertNames==NAMES_LOWERCASE)
     wcslower(Name);
 }
+#endif
 #endif
 
 

@@ -3,7 +3,9 @@
 
 bool ReadTextFile(
   const char *Name,
+#ifndef __BIONIC__
   const wchar *NameW,
+#endif
   StringList *List,
   bool Config,
   bool AbortOnError=false,

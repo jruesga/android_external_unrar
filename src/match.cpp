@@ -1,12 +1,18 @@
 #include "rar.hpp"
 
 static bool match(const char *pattern,const char *string,bool ForceCase);
+#ifndef __BIONIC__
 static bool match(const wchar *pattern,const wchar *string,bool ForceCase);
+#endif
 
 static int mstricompc(const char *Str1,const char *Str2,bool ForceCase);
+#ifndef __BIONIC__
 static int mwcsicompc(const wchar *Str1,const wchar *Str2,bool ForceCase);
+#endif
 static int mstrnicompc(const char *Str1,const char *Str2,size_t N,bool ForceCase);
+#ifndef __BIONIC__
 static int mwcsnicompc(const wchar *Str1,const wchar *Str2,size_t N,bool ForceCase);
+#endif
 
 inline uint toupperc(byte ch,bool ForceCase)
 {
@@ -93,6 +99,7 @@ bool CmpName(const char *Wildcard,const char *Name,int CmpMode)
 
 
 #ifndef SFX_MODULE
+#ifndef __BIONIC__
 bool CmpName(const wchar *Wildcard,const wchar *Name,int CmpMode)
 {
   bool ForceCase=(CmpMode&MATCH_FORCECASESENSITIVE)!=0;
@@ -150,6 +157,7 @@ bool CmpName(const wchar *Wildcard,const wchar *Name,int CmpMode)
   return(match(Name1,Name2,ForceCase));
 }
 #endif
+#endif
 
 
 bool match(const char *pattern,const char *string,bool ForceCase)
@@ -204,6 +212,7 @@ bool match(const char *pattern,const char *string,bool ForceCase)
 
 
 #ifndef SFX_MODULE
+#ifndef __BIONIC__
 bool match(const wchar *pattern,const wchar *string,bool ForceCase)
 {
   for (;; ++string)
@@ -254,6 +263,7 @@ bool match(const wchar *pattern,const wchar *string,bool ForceCase)
   }
 }
 #endif
+#endif
 
 
 int mstricompc(const char *Str1,const char *Str2,bool ForceCase)
@@ -265,12 +275,14 @@ int mstricompc(const char *Str1,const char *Str2,bool ForceCase)
 
 
 #ifndef SFX_MODULE
+#ifndef __BIONIC__
 int mwcsicompc(const wchar *Str1,const wchar *Str2,bool ForceCase)
 {
   if (ForceCase)
     return(wcscmp(Str1,Str2));
   return(wcsicompc(Str1,Str2));
 }
+#endif
 #endif
 
 
@@ -287,6 +299,7 @@ int mstrnicompc(const char *Str1,const char *Str2,size_t N,bool ForceCase)
 
 
 #ifndef SFX_MODULE
+#ifndef __BIONIC__
 int mwcsnicompc(const wchar *Str1,const wchar *Str2,size_t N,bool ForceCase)
 {
   if (ForceCase)
@@ -297,4 +310,5 @@ int mwcsnicompc(const wchar *Str1,const wchar *Str2,size_t N,bool ForceCase)
   return(wcsnicomp(Str1,Str2,N));
 #endif
 }
+#endif
 #endif

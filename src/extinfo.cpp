@@ -17,7 +17,11 @@
 
 
 #ifndef SFX_MODULE
+#ifndef __BIONIC__
 void SetExtraInfo(CommandData *Cmd,Archive &Arc,char *Name,wchar *NameW)
+#else
+void SetExtraInfo(CommandData *Cmd,Archive &Arc,char *Name)
+#endif
 {
   switch(Arc.SubBlockHead.SubType)
   {
@@ -52,8 +56,11 @@ void SetExtraInfo(CommandData *Cmd,Archive &Arc,char *Name,wchar *NameW)
 }
 #endif
 
-
+#ifndef __BIONIC__
 void SetExtraInfoNew(CommandData *Cmd,Archive &Arc,char *Name,wchar *NameW)
+#else
+void SetExtraInfoNew(CommandData *Cmd,Archive &Arc,char *Name)
+#endif
 {
 #if defined(_EMX) && !defined(_DJGPP)
   if (Cmd->ProcessEA && Arc.SubHead.CmpName(SUBHEAD_TYPE_OS2EA))

@@ -36,9 +36,13 @@ class ScanTree
     bool ScanEntireDisk;
 
     char CurMask[NM];
+#ifndef __BIONIC__
     wchar CurMaskW[NM];
+#endif
     char OrigCurMask[NM];
+#ifndef __BIONIC__
     wchar OrigCurMaskW[NM];
+#endif
     bool SearchAllInRoot;
     size_t SpecPathLength;
     size_t SpecPathLengthW;

@@ -1,15 +1,25 @@
 #include "rar.hpp"
 
+#ifndef __BIONIC__
 bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,wchar *NameW,
                 OVERWRITE_MODE Mode,bool *UserReject,int64 FileSize,
                 uint FileTime,bool WriteOnly)
+#else
+bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,
+                OVERWRITE_MODE Mode,bool *UserReject,int64 FileSize,
+                uint FileTime,bool WriteOnly)
+#endif
 {
   if (UserReject!=NULL)
     *UserReject=false;
 #if defined(_WIN_ALL) && !defined(_WIN_CE)
   bool ShortNameChanged=false;
 #endif
+#ifndef __BIONIC__
   while (FileExist(Name,NameW))
+#else
+  while (FileExist(Name))
+#endif
   {
 #if defined(_WIN_ALL) && !defined(_WIN_CE)
     if (!ShortNameChanged)
@@ -26,8 +36,10 @@ bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,wchar *NameW,
       {
         if (Name!=NULL && *Name!=0)
           WideToChar(WideName,Name);
+#ifndef __BIONIC__
         if (NameW!=NULL && *NameW!=0)
           wcscpy(NameW,WideName);
+#endif
         continue;
       }
     }
@@ -45,7 +57,11 @@ bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,wchar *NameW,
     // Must be before Cmd->AllYes check or -y switch would override -or.
     if (Mode==OVERWRITE_AUTORENAME)
     {
+#ifndef __BIONIC__
       if (!GetAutoRenamedName(Name,NameW))
+#else
+      if (!GetAutoRenamedName(Name))
+#endif
         Mode=OVERWRITE_DEFAULT;
       continue;
     }
@@ -62,8 +78,10 @@ bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,wchar *NameW,
     if (Mode==OVERWRITE_DEFAULT || Mode==OVERWRITE_FORCE_ASK)
     {
       char NewName[NM];
+#ifndef __BIONIC__
       wchar NewNameW[NM];
       *NewNameW=0;
+#endif
       eprintf(St(MFileExists),Name);
       int Choice=Ask(St(MYesNoAllRenQ));
       if (Choice==1)
@@ -113,11 +131,13 @@ bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,wchar *NameW,
         else
           strcpy(Name,NewName);
 
+#ifndef __BIONIC__
         if (NameW!=NULL)
           if (PointToName(NewNameW)==NewNameW)
             wcscpy(PointToName(NameW),NewNameW);
           else
             wcscpy(NameW,NewNameW);
+#endif
         continue;
       }
       if (Choice==6)
@@ -125,21 +145,39 @@ bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,wchar *NameW,
     }
   }
   uint FileMode=WriteOnly ? FMF_WRITE|FMF_SHAREREAD:FMF_UPDATE|FMF_SHAREREAD;
+#ifndef __BIONIC__
   if (NewFile!=NULL && NewFile->Create(Name,NameW,FileMode))
+#else
+  if (NewFile!=NULL && NewFile->Create(Name,FileMode))
+#endif
     return(true);
+#ifndef __BIONIC__
   PrepareToDelete(Name,NameW);
   CreatePath(Name,NameW,true);
   return(NewFile!=NULL ? NewFile->Create(Name,NameW,FileMode):DelFile(Name,NameW));
+#else
+  PrepareToDelete(Name);
+  CreatePath(Name,true);
+  return(NewFile!=NULL ? NewFile->Create(Name,FileMode):DelFile(Name));
+#endif
 }
 
 
+#ifndef __BIONIC__
 bool GetAutoRenamedName(char *Name,wchar *NameW)
+#else
+bool GetAutoRenamedName(char *Name)
+#endif
 {
   char NewName[NM];
+#ifndef __BIONIC__
   wchar NewNameW[NM];
 
   if (Name!=NULL && strlen(Name)>ASIZE(NewName)-10 || 
       NameW!=NULL && wcslen(NameW)>ASIZE(NewNameW)-10)
+#else
+  if (Name!=NULL && strlen(Name)>ASIZE(NewName)-10)
+#endif
     return(false);
   char *Ext=NULL;
   if (Name!=NULL && *Name!=0)
@@ -148,6 +186,7 @@ bool GetAutoRenamedName(char *Name,wchar *NameW)
     if (Ext==NULL)
       Ext=Name+strlen(Name);
   }
+#ifndef __BIONIC__
   wchar *ExtW=NULL;
   if (NameW!=NULL && *NameW!=0)
   {
@@ -155,20 +194,29 @@ bool GetAutoRenamedName(char *Name,wchar *NameW)
     if (ExtW==NULL)
       ExtW=NameW+wcslen(NameW);
   }
+#endif
   *NewName=0;
+#ifndef __BIONIC__
   *NewNameW=0;
+#endif
   for (int FileVer=1;;FileVer++)
   {
     if (Name!=NULL && *Name!=0)
       sprintf(NewName,"%.*s(%d)%s",int(Ext-Name),Name,FileVer,Ext);
+#ifndef __BIONIC__
     if (NameW!=NULL && *NameW!=0)
       sprintfw(NewNameW,ASIZE(NewNameW),L"%.*s(%d)%s",int(ExtW-NameW),NameW,FileVer,ExtW);
     if (!FileExist(NewName,NewNameW))
+#else
+    if (!FileExist(NewName))
+#endif
     {
       if (Name!=NULL && *Name!=0)
         strcpy(Name,NewName);
+#ifndef __BIONIC__
       if (NameW!=NULL && *NameW!=0)
         wcscpy(NameW,NewNameW);
+#endif
       break;
     }
     if (FileVer>=1000000)

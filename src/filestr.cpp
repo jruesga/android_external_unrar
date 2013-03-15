@@ -4,7 +4,9 @@ static bool IsUnicode(byte *Data,int Size);
 
 bool ReadTextFile(
   const char *Name,
+#ifndef __BIONIC__
   const wchar *NameW,
+#endif
   StringList *List,
   bool Config,
   bool AbortOnError,
@@ -21,8 +23,10 @@ bool ReadTextFile(
     else
       strcpy(FileName,Name);
 
+#ifndef __BIONIC__
   wchar FileNameW[NM];
   *FileNameW=0;
+#endif
 
 #ifdef _WIN_ALL
   if (NameW!=NULL)
@@ -33,9 +37,17 @@ bool ReadTextFile(
 #endif
 
   File SrcFile;
+#ifndef __BIONIC__
   if (FileName!=NULL && *FileName!=0 || FileNameW!=NULL && *FileNameW!=0)
+#else
+  if (FileName!=NULL && *FileName!=0)
+#endif
   {
+#ifndef __BIONIC__
     bool OpenCode=AbortOnError ? SrcFile.WOpen(FileName,FileNameW):SrcFile.Open(FileName,FileNameW,0);
+#else
+    bool OpenCode=AbortOnError ? SrcFile.WOpen(FileName):SrcFile.Open(FileName,0);
+#endif
 
     if (!OpenCode)
     {
@@ -58,6 +70,7 @@ bool ReadTextFile(
 
   memset(&Data[DataSize],0,5);
 
+#ifndef __BIONIC__
   if (SrcCharset==RCH_UNICODE ||
       SrcCharset==RCH_DEFAULT && IsUnicode((byte *)&Data[0],DataSize))
   {
@@ -137,6 +150,7 @@ bool ReadTextFile(
   }
   else
   {
+#endif
     char *CurStr=&Data[0];
     while (*CurStr!=0)
     {
@@ -192,7 +206,9 @@ bool ReadTextFile(
       while (*CurStr=='\r' || *CurStr=='\n')
         CurStr++;
     }
+#ifndef __BIONIC__
   }
+#endif
   return(true);
 }
 

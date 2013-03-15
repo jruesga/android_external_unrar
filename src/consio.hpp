@@ -13,9 +13,17 @@ void InitConsoleOptions(MESSAGE_TYPE MsgStream,bool Sound);
   void mprintf(const char *fmt,...);
   void eprintf(const char *fmt,...);
   void Alarm();
+#ifndef __BIONIC__
   void GetPasswordText(wchar *Str,uint MaxLength);
   bool GetPassword(PASSWORD_TYPE Type,const char *FileName,const wchar *FileNameW,SecPassword *Password);
+#else
+  void GetPasswordText(char *Str,uint MaxLength);
+  bool GetPassword(PASSWORD_TYPE Type,const char *FileName,SecPassword *Password);
+#endif
   int Ask(const char *AskStr);
+#ifdef __BIONIC__
+  const char *getpass(const char *prompt);
+#endif
 #endif
 
 void OutComment(char *Comment,size_t Size);
@@ -29,8 +37,13 @@ void OutComment(char *Comment,size_t Size);
     inline void eprintf(const char *fmt,...) {}
   #endif
   inline void Alarm() {}
+#ifndef __BIONIC__
   inline void GetPasswordText(wchar *Str,uint MaxLength) {}
   inline bool GetPassword(PASSWORD_TYPE Type,const char *FileName,const wchar *FileNameW,SecPassword *Password) {return(false);}
+#else
+  inline void GetPasswordText(char *Str,uint MaxLength) {}
+  inline bool GetPassword(PASSWORD_TYPE Type,const char *FileName,SecPassword *Password) {return(false);}
+#endif
   inline int Ask(const char *AskStr) {return(0);}
 #endif
 

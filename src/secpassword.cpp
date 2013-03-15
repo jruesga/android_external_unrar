@@ -54,7 +54,11 @@ CryptLoader GlobalCryptLoader;
 
 SecPassword::SecPassword()
 {
+#ifndef __BIONIC__
   Set(L"");
+#else
+  Set("");
+#endif
 }
 
 
@@ -94,7 +98,11 @@ void cleandata(void *data,size_t size)
 // people share the same computer and somebody left WinRAR copy with entered
 // password. So we decided to obfuscate the password to make it more difficult
 // to find it in dump.
+#ifndef __BIONIC__
 void SecPassword::Process(const wchar *Src,wchar *Dst,size_t MaxSize,bool Encode)
+#else
+void SecPassword::Process(const char *Src,char *Dst,size_t MaxSize,bool Encode)
+#endif
 {
 #ifdef _WIN_ALL
   // Try to utilize the secure Crypt[Un]ProtectMemory if possible.
@@ -145,11 +153,14 @@ void SecPassword::Process(const wchar *Src,wchar *Dst,size_t MaxSize,bool Encode
 #endif
 
   for (size_t I=0;I<MaxSize;I++)
-    Dst[I]=wchar(Src[I]^(Key+I+75));
+    Dst[I]=char(Src[I]^(Key+I+75));
 }
 
-
+#ifndef __BIONIC__
 void SecPassword::Get(wchar *Psw,size_t MaxSize)
+#else
+void SecPassword::Get(char *Psw,size_t MaxSize)
+#endif
 {
   if (PasswordSet)
   {
@@ -160,8 +171,11 @@ void SecPassword::Get(wchar *Psw,size_t MaxSize)
     *Psw=0;
 }
 
-
+#ifndef __BIONIC__
 void SecPassword::Set(const wchar *Psw)
+#else
+void SecPassword::Set(const char *Psw)
+#endif
 {
   if (*Psw==0)
   {
@@ -178,9 +192,17 @@ void SecPassword::Set(const wchar *Psw)
 
 size_t SecPassword::Length()
 {
+#ifndef __BIONIC__
   wchar Plain[MAXPASSWORD];
+#else
+  char Plain[MAXPASSWORD];
+#endif
   Get(Plain,ASIZE(Plain));
+#ifndef __BIONIC__
   size_t Length=wcslen(Plain);
+#else
+  size_t Length=strlen(Plain);
+#endif
   cleandata(Plain,ASIZE(Plain));
   return Length;
 }
@@ -192,10 +214,18 @@ bool SecPassword::operator == (SecPassword &psw)
   // than encryption function will always produce the same result for same
   // data (salt?) and because we do not clean the rest of password buffer
   // after trailing zero before encoding password. So we decode first.
+#ifndef __BIONIC__
   wchar Plain1[MAXPASSWORD],Plain2[MAXPASSWORD];
+#else
+  char Plain1[MAXPASSWORD],Plain2[MAXPASSWORD];
+#endif
   Get(Plain1,ASIZE(Plain1));
   psw.Get(Plain2,ASIZE(Plain2));
+#ifndef __BIONIC__
   bool Result=wcscmp(Plain1,Plain2)==0;
+#else
+  bool Result=strcmp(Plain1,Plain2)==0;
+#endif
   cleandata(Plain1,ASIZE(Plain1));
   cleandata(Plain2,ASIZE(Plain2));
   return Result;
