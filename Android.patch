@@ -1,6 +1,6 @@
 diff -crB orig/arccmt.cpp src/arccmt.cpp
-*** orig/arccmt.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/arccmt.cpp	2013-03-11 23:47:27.126169000 +0100
+*** orig/arccmt.cpp	2013-12-28 19:18:09.103077946 +0100
+--- src/arccmt.cpp	2013-12-28 19:18:09.111077946 +0100
 ***************
 *** 1,6 ****
 --- 1,10 ----
@@ -86,8 +86,8 @@ diff -crB orig/arccmt.cpp src/arccmt.cpp
       size_t CmtSize=CmtBuf.Size();
       char *ChPtr=(char *)memchr(&CmtBuf[0],0x1A,CmtSize);
 diff -crB orig/archive.cpp src/archive.cpp
-*** orig/archive.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/archive.cpp	2013-03-11 23:41:09.898157000 +0100
+*** orig/archive.cpp	2013-12-28 19:18:09.103077946 +0100
+--- src/archive.cpp	2013-12-28 19:18:09.111077946 +0100
 ***************
 *** 42,48 ****
 --- 42,50 ----
@@ -165,8 +165,8 @@ diff -crB orig/archive.cpp src/archive.cpp
   
     return(true);
 diff -crB orig/archive.hpp src/archive.hpp
-*** orig/archive.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/archive.hpp	2013-03-11 23:41:16.334157000 +0100
+*** orig/archive.hpp	2013-12-28 19:18:09.103077946 +0100
+--- src/archive.hpp	2013-12-28 19:18:09.111077946 +0100
 ***************
 *** 13,19 ****
 --- 13,21 ----
@@ -232,8 +232,8 @@ diff -crB orig/archive.hpp src/archive.hpp
   
   
 diff -crB orig/arcread.cpp src/arcread.cpp
-*** orig/arcread.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/arcread.cpp	2013-03-13 02:15:36.731182000 +0100
+*** orig/arcread.cpp	2013-12-28 19:18:09.104077946 +0100
+--- src/arcread.cpp	2013-12-28 19:18:09.111077946 +0100
 ***************
 *** 99,105 ****
 --- 99,109 ----
@@ -309,8 +309,8 @@ diff -crB orig/arcread.cpp src/arcread.cpp
   
   bool Archive::IsArcDir()
 diff -crB orig/cmddata.cpp src/cmddata.cpp
-*** orig/cmddata.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/cmddata.cpp	2013-03-15 20:09:22.971140375 +0100
+*** orig/cmddata.cpp	2013-12-28 19:18:09.104077946 +0100
+--- src/cmddata.cpp	2013-12-28 19:18:09.112077946 +0100
 ***************
 *** 20,28 ****
 --- 20,32 ----
@@ -778,8 +778,8 @@ diff -crB orig/cmddata.cpp src/cmddata.cpp
     return(true);
   }
 diff -crB orig/cmddata.hpp src/cmddata.hpp
-*** orig/cmddata.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/cmddata.hpp	2013-03-12 01:20:29.178343000 +0100
+*** orig/cmddata.hpp	2013-12-28 19:18:09.104077946 +0100
+--- src/cmddata.hpp	2013-12-28 19:18:09.112077946 +0100
 ***************
 *** 10,16 ****
 --- 10,20 ----
@@ -838,8 +838,8 @@ diff -crB orig/cmddata.hpp src/cmddata.hpp
       StringList *FileArgs;
       StringList *ExclArgs;
 diff -crB orig/consio.cpp src/consio.cpp
-*** orig/consio.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/consio.cpp	2013-03-15 20:10:23.911141182 +0100
+*** orig/consio.cpp	2013-12-28 19:18:09.104077946 +0100
+--- src/consio.cpp	2013-12-28 19:18:09.112077946 +0100
 ***************
 *** 4,9 ****
 --- 4,13 ----
@@ -984,8 +984,8 @@ diff -crB orig/consio.cpp src/consio.cpp
           eprintf(St(MNotMatchPsw));
           cleandata(PlainPsw,sizeof(PlainPsw));
 diff -crB orig/consio.hpp src/consio.hpp
-*** orig/consio.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/consio.hpp	2013-03-12 00:04:37.062201000 +0100
+*** orig/consio.hpp	2013-12-28 19:18:09.104077946 +0100
+--- src/consio.hpp	2013-12-28 19:18:09.112077946 +0100
 ***************
 *** 13,21 ****
 --- 13,29 ----
@@ -1023,8 +1023,8 @@ diff -crB orig/consio.hpp src/consio.hpp
   #endif
   
 diff -crB orig/crypt.cpp src/crypt.cpp
-*** orig/crypt.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/crypt.cpp	2013-03-12 00:27:55.142245000 +0100
+*** orig/crypt.cpp	2013-12-28 19:18:09.104077946 +0100
+--- src/crypt.cpp	2013-12-28 19:18:09.113077946 +0100
 ***************
 *** 189,195 ****
 --- 189,199 ----
@@ -1072,8 +1072,8 @@ diff -crB orig/crypt.cpp src/crypt.cpp
       {
         memcpy(RawPsw+RawLength,Salt,SALT_SIZE);
 diff -crB orig/crypt.hpp src/crypt.hpp
-*** orig/crypt.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/crypt.hpp	2013-03-12 00:12:51.194216000 +0100
+*** orig/crypt.hpp	2013-12-28 19:18:09.104077946 +0100
+--- src/crypt.hpp	2013-12-28 19:18:09.113077946 +0100
 ***************
 *** 9,15 ****
 --- 9,19 ----
@@ -1089,8 +1089,8 @@ diff -crB orig/crypt.hpp src/crypt.hpp
   
     ~CryptKeyCacheItem()
 diff -crB orig/errhnd.cpp src/errhnd.cpp
-*** orig/errhnd.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/errhnd.cpp	2013-03-12 00:39:28.066266000 +0100
+*** orig/errhnd.cpp	2013-12-28 19:18:09.105077946 +0100
+--- src/errhnd.cpp	2013-12-28 19:18:09.113077946 +0100
 ***************
 *** 25,32 ****
     Throw(RARX_MEMORY);
@@ -1399,8 +1399,8 @@ diff -crB orig/errhnd.cpp src/errhnd.cpp
   #ifndef SILENT
     ErrMsg(ArcName,St(MErrWrite),FileName);
 diff -crB orig/errhnd.hpp src/errhnd.hpp
-*** orig/errhnd.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/errhnd.hpp	2013-03-11 01:43:20.606412000 +0100
+*** orig/errhnd.hpp	2013-12-28 19:18:09.105077946 +0100
+--- src/errhnd.hpp	2013-12-28 19:18:09.113077946 +0100
 ***************
 *** 2,9 ****
 --- 2,11 ----
@@ -1465,8 +1465,8 @@ diff -crB orig/errhnd.hpp src/errhnd.hpp
       void SetErrorCode(RAR_EXIT Code);
       RAR_EXIT GetErrorCode() {return(ExitCode);}
 diff -crB orig/extinfo.cpp src/extinfo.cpp
-*** orig/extinfo.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/extinfo.cpp	2013-03-13 01:45:30.363125000 +0100
+*** orig/extinfo.cpp	2013-12-28 19:18:09.105077946 +0100
+--- src/extinfo.cpp	2013-12-28 19:18:09.113077946 +0100
 ***************
 *** 17,23 ****
 --- 17,27 ----
@@ -1504,8 +1504,8 @@ diff -crB orig/extinfo.cpp src/extinfo.cpp
   #if defined(_EMX) && !defined(_DJGPP)
     if (Cmd->ProcessEA && Arc.SubHead.CmpName(SUBHEAD_TYPE_OS2EA))
 diff -crB orig/extinfo.hpp src/extinfo.hpp
-*** orig/extinfo.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/extinfo.hpp	2013-03-13 01:43:28.599122000 +0100
+*** orig/extinfo.hpp	2013-12-28 19:18:09.105077946 +0100
+--- src/extinfo.hpp	2013-12-28 19:18:09.113077946 +0100
 ***************
 *** 1,8 ****
   #ifndef _RAR_EXTINFO_
@@ -1530,8 +1530,8 @@ diff -crB orig/extinfo.hpp src/extinfo.hpp
   
   #endif
 diff -crB orig/extract.cpp src/extract.cpp
-*** orig/extract.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/extract.cpp	2013-03-15 20:12:25.467146568 +0100
+*** orig/extract.cpp	2013-12-28 19:18:09.105077946 +0100
+--- src/extract.cpp	2013-12-28 19:18:09.113077946 +0100
 ***************
 *** 3,15 ****
 --- 3,23 ----
@@ -2054,8 +2054,8 @@ diff -crB orig/extract.cpp src/extract.cpp
           }
         }
 diff -crB orig/extract.hpp src/extract.hpp
-*** orig/extract.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/extract.hpp	2013-03-12 00:45:29.214278000 +0100
+*** orig/extract.hpp	2013-12-28 19:18:09.105077946 +0100
+--- src/extract.hpp	2013-12-28 19:18:09.114077946 +0100
 ***************
 *** 26,38 ****
 --- 26,42 ----
@@ -2077,8 +2077,8 @@ diff -crB orig/extract.hpp src/extract.hpp
     public:
       CmdExtract();
 diff -crB orig/filcreat.cpp src/filcreat.cpp
-*** orig/filcreat.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/filcreat.cpp	2013-03-11 23:35:49.706147000 +0100
+*** orig/filcreat.cpp	2013-12-28 19:18:09.105077946 +0100
+--- src/filcreat.cpp	2013-12-28 19:18:09.114077946 +0100
 ***************
 *** 1,15 ****
 --- 1,25 ----
@@ -2248,8 +2248,8 @@ diff -crB orig/filcreat.cpp src/filcreat.cpp
       }
       if (FileVer>=1000000)
 diff -crB orig/filcreat.hpp src/filcreat.hpp
-*** orig/filcreat.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/filcreat.hpp	2013-03-11 23:28:59.038135000 +0100
+*** orig/filcreat.hpp	2013-12-28 19:18:09.105077946 +0100
+--- src/filcreat.hpp	2013-12-28 19:18:09.114077946 +0100
 ***************
 *** 1,10 ****
 --- 1,17 ----
@@ -2271,8 +2271,8 @@ diff -crB orig/filcreat.hpp src/filcreat.hpp
   #if defined(_WIN_ALL) && !defined(_WIN_CE)
   bool UpdateExistingShortName(wchar *Name);
 diff -crB orig/file.cpp src/file.cpp
-*** orig/file.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/file.cpp	2013-03-11 02:08:05.042458000 +0100
+*** orig/file.cpp	2013-12-28 19:18:09.105077946 +0100
+--- src/file.cpp	2013-12-28 19:18:09.114077946 +0100
 ***************
 *** 7,13 ****
 --- 7,15 ----
@@ -2656,8 +2656,8 @@ diff -crB orig/file.cpp src/file.cpp
         return(-1);
     return(INT32TO64(HighDist,LowDist));
 diff -crB orig/filefn.cpp src/filefn.cpp
-*** orig/filefn.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/filefn.cpp	2013-03-15 20:14:02.767148742 +0100
+*** orig/filefn.cpp	2013-12-28 19:18:09.105077946 +0100
+--- src/filefn.cpp	2013-12-28 19:18:09.114077946 +0100
 ***************
 *** 1,6 ****
 --- 1,10 ----
@@ -2966,8 +2966,8 @@ diff -crB orig/filefn.cpp src/filefn.cpp
     return(Name!=NULL && remove(Name)==0);
   }
 diff -crB orig/filefn.hpp src/filefn.hpp
-*** orig/filefn.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/filefn.hpp	2013-03-11 02:23:56.942488000 +0100
+*** orig/filefn.hpp	2013-12-28 19:18:09.105077946 +0100
+--- src/filefn.hpp	2013-12-28 19:18:09.114077946 +0100
 ***************
 *** 3,23 ****
   
@@ -3065,8 +3065,8 @@ diff -crB orig/filefn.hpp src/filefn.hpp
   #if defined(_WIN_ALL) && !defined(_WIN_CE)
   bool SetFileCompression(char *Name,wchar *NameW,bool State);
 diff -crB orig/file.hpp src/file.hpp
-*** orig/file.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/file.hpp	2013-03-11 02:09:16.522460000 +0100
+*** orig/file.hpp	2013-12-28 19:18:09.105077946 +0100
+--- src/file.hpp	2013-12-28 19:18:09.114077946 +0100
 ***************
 *** 66,72 ****
 --- 66,74 ----
@@ -3112,8 +3112,8 @@ diff -crB orig/file.hpp src/file.hpp
       int Read(void *Data,size_t Size);
       int DirectRead(void *Data,size_t Size);
 diff -crB orig/filestr.cpp src/filestr.cpp
-*** orig/filestr.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/filestr.cpp	2013-03-13 01:29:10.579095000 +0100
+*** orig/filestr.cpp	2013-12-28 19:18:09.106077946 +0100
+--- src/filestr.cpp	2013-12-28 19:18:09.114077946 +0100
 ***************
 *** 4,10 ****
 --- 4,12 ----
@@ -3192,8 +3192,8 @@ diff -crB orig/filestr.cpp src/filestr.cpp
   }
   
 diff -crB orig/filestr.hpp src/filestr.hpp
-*** orig/filestr.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/filestr.hpp	2013-03-13 01:06:03.471052000 +0100
+*** orig/filestr.hpp	2013-12-28 19:18:09.106077946 +0100
+--- src/filestr.hpp	2013-12-28 19:18:09.115077946 +0100
 ***************
 *** 3,9 ****
 --- 3,11 ----
@@ -3207,8 +3207,8 @@ diff -crB orig/filestr.hpp src/filestr.hpp
     bool Config,
     bool AbortOnError=false,
 diff -crB orig/find.cpp src/find.cpp
-*** orig/find.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/find.cpp	2013-03-13 00:47:01.171017000 +0100
+*** orig/find.cpp	2013-12-28 19:18:09.106077946 +0100
+--- src/find.cpp	2013-12-28 19:18:09.115077946 +0100
 ***************
 *** 3,9 ****
 --- 3,11 ----
@@ -3357,8 +3357,8 @@ diff -crB orig/find.cpp src/find.cpp
     fd->IsDir=IsDir(fd->FileAttr);
     return(true);
 diff -crB orig/find.hpp src/find.hpp
-*** orig/find.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/find.hpp	2013-03-13 00:42:15.587007000 +0100
+*** orig/find.hpp	2013-12-28 19:18:09.106077946 +0100
+--- src/find.hpp	2013-12-28 19:18:09.115077946 +0100
 ***************
 *** 8,14 ****
 --- 8,16 ----
@@ -3402,8 +3402,8 @@ diff -crB orig/find.hpp src/find.hpp
   
   #endif
 diff -crB orig/list.cpp src/list.cpp
-*** orig/list.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/list.cpp	2013-03-13 02:08:51.387169000 +0100
+*** orig/list.cpp	2013-12-28 19:18:09.106077946 +0100
+--- src/list.cpp	2013-12-28 19:18:09.115077946 +0100
 ***************
 *** 15,29 ****
 --- 15,40 ----
@@ -3491,8 +3491,8 @@ diff -crB orig/list.cpp src/list.cpp
     }
   }
 diff -crB orig/match.cpp src/match.cpp
-*** orig/match.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/match.cpp	2013-03-12 00:30:22.482249000 +0100
+*** orig/match.cpp	2013-12-28 19:18:09.106077946 +0100
+--- src/match.cpp	2013-12-28 19:18:09.116077946 +0100
 ***************
 *** 1,12 ****
 --- 1,18 ----
@@ -3592,8 +3592,8 @@ diff -crB orig/match.cpp src/match.cpp
   #endif
 + #endif
 diff -crB orig/match.hpp src/match.hpp
-*** orig/match.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/match.hpp	2013-03-12 00:29:04.458247000 +0100
+*** orig/match.hpp	2013-12-28 19:18:09.107077946 +0100
+--- src/match.hpp	2013-12-28 19:18:09.116077946 +0100
 ***************
 *** 30,35 ****
 --- 30,37 ----
@@ -3606,8 +3606,8 @@ diff -crB orig/match.hpp src/match.hpp
   
   #endif
 diff -crB orig/os.hpp src/os.hpp
-*** orig/os.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/os.hpp	2013-03-12 01:24:09.402350000 +0100
+*** orig/os.hpp	2013-12-28 19:18:09.107077946 +0100
+--- src/os.hpp	2013-12-28 19:18:09.116077946 +0100
 ***************
 *** 155,161 ****
 --- 155,163 ----
@@ -3621,8 +3621,8 @@ diff -crB orig/os.hpp src/os.hpp
   #include <stdlib.h>
   #include <stdarg.h>
 diff -crB orig/pathfn.cpp src/pathfn.cpp
-*** orig/pathfn.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/pathfn.cpp	2013-03-11 02:10:31.434463000 +0100
+*** orig/pathfn.cpp	2013-12-28 19:18:09.107077946 +0100
+--- src/pathfn.cpp	2013-12-28 19:18:09.117077946 +0100
 ***************
 *** 11,17 ****
     return (char*)((*Path && IsDriveDiv(Path[1]) && charnext(Path)==Path+1) ? Path+2:Path);
@@ -4687,8 +4687,8 @@ diff -crB orig/pathfn.cpp src/pathfn.cpp
   }
 + #endif
 diff -crB orig/pathfn.hpp src/pathfn.hpp
-*** orig/pathfn.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/pathfn.hpp	2013-03-11 01:29:18.022386000 +0100
+*** orig/pathfn.hpp	2013-12-28 19:18:09.107077946 +0100
+--- src/pathfn.hpp	2013-12-28 19:18:09.117077946 +0100
 ***************
 *** 2,66 ****
 --- 2,124 ----
@@ -4816,8 +4816,8 @@ diff -crB orig/pathfn.hpp src/pathfn.hpp
   
   #endif
 diff -crB orig/rar.hpp src/rar.hpp
-*** orig/rar.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/rar.hpp	2013-03-12 00:14:40.758220000 +0100
+*** orig/rar.hpp	2013-12-28 19:18:09.107077946 +0100
+--- src/rar.hpp	2013-12-28 19:18:09.117077946 +0100
 ***************
 *** 15,21 ****
 --- 15,23 ----
@@ -4831,8 +4831,8 @@ diff -crB orig/rar.hpp src/rar.hpp
   #include "array.hpp"
   #include "timefn.hpp"
 diff -crB orig/recvol.cpp src/recvol.cpp
-*** orig/recvol.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/recvol.cpp	2013-03-13 00:40:56.543005000 +0100
+*** orig/recvol.cpp	2013-12-28 19:18:09.108077946 +0100
+--- src/recvol.cpp	2013-12-28 19:18:09.118077946 +0100
 ***************
 *** 67,80 ****
     }
@@ -5148,8 +5148,8 @@ diff -crB orig/recvol.cpp src/recvol.cpp
       {
         Arc.Seek(Arc.NextBlockPos,SEEK_SET);
 diff -crB orig/recvol.hpp src/recvol.hpp
-*** orig/recvol.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/recvol.hpp	2013-03-12 01:01:25.438307000 +0100
+*** orig/recvol.hpp	2013-12-28 19:18:09.108077946 +0100
+--- src/recvol.hpp	2013-12-28 19:18:09.118077946 +0100
 ***************
 *** 13,20 ****
 --- 13,25 ----
@@ -5167,8 +5167,8 @@ diff -crB orig/recvol.hpp src/recvol.hpp
   
   #endif
 diff -crB orig/scantree.cpp src/scantree.cpp
-*** orig/scantree.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/scantree.cpp	2013-03-13 01:38:49.171113000 +0100
+*** orig/scantree.cpp	2013-12-28 19:18:09.109077946 +0100
+--- src/scantree.cpp	2013-12-28 19:18:09.118077946 +0100
 ***************
 *** 11,17 ****
 --- 11,19 ----
@@ -5389,8 +5389,8 @@ diff -crB orig/scantree.cpp src/scantree.cpp
   
       // We need to use OrigCurMask for depths less than SetAllMaskDepth
 diff -crB orig/scantree.hpp src/scantree.hpp
-*** orig/scantree.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/scantree.hpp	2013-03-13 01:30:03.683097000 +0100
+*** orig/scantree.hpp	2013-12-28 19:18:09.109077946 +0100
+--- src/scantree.hpp	2013-12-28 19:18:09.118077946 +0100
 ***************
 *** 36,44 ****
 --- 36,48 ----
@@ -5408,8 +5408,8 @@ diff -crB orig/scantree.hpp src/scantree.hpp
       size_t SpecPathLength;
       size_t SpecPathLengthW;
 diff -crB orig/secpassword.cpp src/secpassword.cpp
-*** orig/secpassword.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/secpassword.cpp	2013-03-15 20:17:08.171153700 +0100
+*** orig/secpassword.cpp	2013-12-28 19:18:09.109077946 +0100
+--- src/secpassword.cpp	2013-12-28 19:18:09.118077946 +0100
 ***************
 *** 54,60 ****
 --- 54,64 ----
@@ -5530,8 +5530,8 @@ diff -crB orig/secpassword.cpp src/secpassword.cpp
     cleandata(Plain2,ASIZE(Plain2));
     return Result;
 diff -crB orig/secpassword.hpp src/secpassword.hpp
-*** orig/secpassword.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/secpassword.hpp	2013-03-11 23:55:59.078185000 +0100
+*** orig/secpassword.hpp	2013-12-28 19:18:09.109077946 +0100
+--- src/secpassword.hpp	2013-12-28 19:18:09.119077946 +0100
 ***************
 *** 6,14 ****
 --- 6,22 ----
@@ -5569,8 +5569,8 @@ diff -crB orig/secpassword.hpp src/secpassword.hpp
       size_t Length();
       bool operator == (SecPassword &psw);
 diff -crB orig/strfn.cpp src/strfn.cpp
-*** orig/strfn.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/strfn.cpp	2013-03-13 00:55:30.267032000 +0100
+*** orig/strfn.cpp	2013-12-28 19:18:09.110077946 +0100
+--- src/strfn.cpp	2013-12-28 19:18:09.119077946 +0100
 ***************
 *** 13,26 ****
   
@@ -5853,8 +5853,8 @@ diff -crB orig/strfn.cpp src/strfn.cpp
   #ifdef _WIN_ALL
   // Parse string containing parameters separated with spaces.
 diff -crB orig/strfn.hpp src/strfn.hpp
-*** orig/strfn.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/strfn.hpp	2013-03-11 01:22:43.638374000 +0100
+*** orig/strfn.hpp	2013-12-28 19:18:09.110077946 +0100
+--- src/strfn.hpp	2013-12-28 19:18:09.119077946 +0100
 ***************
 *** 2,8 ****
 --- 2,10 ----
@@ -5925,8 +5925,8 @@ diff -crB orig/strfn.hpp src/strfn.hpp
   
   #endif
 diff -crB orig/strlist.cpp src/strlist.cpp
-*** orig/strlist.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/strlist.cpp	2013-03-11 01:18:11.366365000 +0100
+*** orig/strlist.cpp	2013-12-28 19:18:09.110077946 +0100
+--- src/strlist.cpp	2013-12-28 19:18:09.119077946 +0100
 ***************
 *** 10,21 ****
   {
@@ -6275,8 +6275,8 @@ diff -crB orig/strlist.cpp src/strlist.cpp
   }
   #endif
 diff -crB orig/strlist.hpp src/strlist.hpp
-*** orig/strlist.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/strlist.hpp	2013-03-11 01:06:37.858344000 +0100
+*** orig/strlist.hpp	2013-12-28 19:18:09.110077946 +0100
+--- src/strlist.hpp	2013-12-28 19:18:09.119077946 +0100
 ***************
 *** 7,35 ****
 --- 7,55 ----
@@ -6330,8 +6330,8 @@ diff -crB orig/strlist.hpp src/strlist.hpp
       void RestorePosition();
   };
 diff -crB orig/ulinks.cpp src/ulinks.cpp
-*** orig/ulinks.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/ulinks.cpp	2013-03-12 00:35:37.410259000 +0100
+*** orig/ulinks.cpp	2013-12-28 19:18:09.110077946 +0100
+--- src/ulinks.cpp	2013-12-28 19:18:09.119077946 +0100
 ***************
 *** 13,19 ****
 --- 13,23 ----
@@ -6347,8 +6347,8 @@ diff -crB orig/ulinks.cpp src/ulinks.cpp
           if (errno==EEXIST)
             Log(Arc.FileName,St(MSymLinkExists),LinkName);
 diff -crB orig/uowners.cpp src/uowners.cpp
-*** orig/uowners.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/uowners.cpp	2013-03-12 00:44:05.434275000 +0100
+*** orig/uowners.cpp	2013-12-28 19:18:09.111077946 +0100
+--- src/uowners.cpp	2013-12-28 19:18:09.120077946 +0100
 ***************
 *** 29,35 ****
 --- 29,39 ----
@@ -6404,8 +6404,8 @@ diff -crB orig/uowners.cpp src/uowners.cpp
 + #endif
   }
 diff -crB orig/volume.cpp src/volume.cpp
-*** orig/volume.cpp	2012-06-09 15:21:04.000000000 +0200
---- src/volume.cpp	2013-03-12 01:08:10.742320000 +0100
+*** orig/volume.cpp	2013-12-28 19:18:09.111077946 +0100
+--- src/volume.cpp	2013-12-28 19:18:09.120077946 +0100
 ***************
 *** 33,42 ****
 --- 33,48 ----
@@ -6555,8 +6555,8 @@ diff -crB orig/volume.cpp src/volume.cpp
     eprintf(St(MAskNextVol),ArcName);
     if (Ask(St(MContinueQuit))==2)
 diff -crB orig/volume.hpp src/volume.hpp
-*** orig/volume.hpp	2012-06-09 15:21:04.000000000 +0200
---- src/volume.hpp	2013-03-12 00:53:16.458292000 +0100
+*** orig/volume.hpp	2013-12-28 19:18:09.111077946 +0100
+--- src/volume.hpp	2013-12-28 19:18:09.120077946 +0100
 ***************
 *** 6,11 ****
 --- 6,15 ----
